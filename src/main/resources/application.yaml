@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: ecommerce
+  profiles:
+      active: dev
+
+server:
+  port: 8080
+
+
