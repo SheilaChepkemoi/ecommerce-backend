@@ -23,10 +23,8 @@ public class ProductRequest {
     @DecimalMin(value = "0.01", message = "Price must be greater than 0")
     private BigDecimal price;
 
-    @NotBlank(message = "SKU is required")
-    private String sku;
-
-    private String brand;
+    @NotNull(message="Brand name is required")
+    private Long brandId;
 
     @NotNull(message = "Stock quantity is required")
     @PositiveOrZero(message = "Stock quantity cannot be negative")

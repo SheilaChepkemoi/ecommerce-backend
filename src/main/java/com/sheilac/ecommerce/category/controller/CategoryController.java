@@ -5,6 +5,7 @@ import com.sheilac.ecommerce.category.dto.CategoryResponse;
 import com.sheilac.ecommerce.category.service.CategoryService;
 import com.sheilac.ecommerce.utils.enums.ResponseType;
 import com.sheilac.ecommerce.utils.response.CustomResponse;
+import com.sheilac.ecommerce.utils.response.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,15 +45,28 @@ public class CategoryController {
 
 
     // GET ALL CATEGORIES
+
     @GetMapping
-    public ResponseEntity<CustomResponse<List<CategoryResponse>>> getAllCategories() {
+    public ResponseEntity<CustomResponse<PageResponse<CategoryResponse>>> getAllCategories(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
 
-        List<CategoryResponse> categories =
-                categoryService.getAllCategories();
+        PageResponse<CategoryResponse> categories =
+                categoryService.getAllCategories(
+                        name,
+                        page,
+                        size,
+                        sortBy,
+                        sortDirection
+                );
 
-        CustomResponse<List<CategoryResponse>> response =
+        CustomResponse<PageResponse<CategoryResponse>> response =
                 CustomResponse
-                        .<List<CategoryResponse>>builder()
+                        .<PageResponse<CategoryResponse>>builder()
                         .responseType(ResponseType.SUCCESS)
                         .payload(categories)
                         .message("Categories retrieved successfully")
@@ -61,7 +75,6 @@ public class CategoryController {
 
         return ResponseEntity.ok(response);
     }
-
 
     // GET CATEGORY BY ID
     @GetMapping("/{id}")
@@ -125,9 +138,27 @@ public class CategoryController {
                 CustomResponse
                         .<Void>builder()
                         .responseType(ResponseType.SUCCESS)
-                        .generatedId(id)
                         .message("Category deleted successfully")
                         .messageTracker(System.currentTimeMillis())
+                        .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<CustomResponse<Void>> activateCategory(
+            @PathVariable Long id
+    ) {
+
+        categoryService.activateCategory(id);
+
+        CustomResponse<Void> response =
+                CustomResponse.<Void>builder()
+                        .responseType(ResponseType.SUCCESS)
+                        .message("Category activated successfully")
                         .build();
 
         return ResponseEntity.ok(response);

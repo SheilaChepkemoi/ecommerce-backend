@@ -1,4 +1,12 @@
 spring:
+  application:
+    name: ecommerce
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 25MB
+
   datasource:
     url: jdbc:postgresql://localhost:5432/ecommerce
     username: postgres
@@ -9,3 +17,17 @@ spring:
       ddl-auto: update
     show-sql: true
 
+pagination:
+  default-page-size: 20
+  default-page: 0
+  default-sort-by: createdAt
+  default-sort-direction: desc
+  allowed-page-sizes:
+    - 20
+    - 50
+    - 100
+
+app:
+  file:
+    storage:
+      location: "D:/Projects/MY PROJECTS/LumaUploads"

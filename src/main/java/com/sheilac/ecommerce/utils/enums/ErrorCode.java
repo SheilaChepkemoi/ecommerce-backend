@@ -10,8 +10,11 @@ public enum ErrorCode {
     BAD_REQUEST("400", HttpStatus.BAD_REQUEST),
     NOT_FOUND("404", HttpStatus.NOT_FOUND),
     UNAUTHORIZED("401", HttpStatus.UNAUTHORIZED),
-    INTERNAL_ERROR("500", HttpStatus.INTERNAL_SERVER_ERROR),
-    CONFLICT("409", HttpStatus.CONFLICT);
+    METHOD_NOT_ALLOWED("405", HttpStatus.METHOD_NOT_ALLOWED),
+    CONFLICT("409", HttpStatus.CONFLICT),
+    CONTENT_TOO_LARGE("413", HttpStatus.CONTENT_TOO_LARGE),
+    UNSUPPORTED_MEDIA_TYPE("415", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
+    INTERNAL_ERROR("500", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
     private final HttpStatus status;

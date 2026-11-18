@@ -9,12 +9,15 @@ public class ProductFilterRequest {
 
         private String search;
 
-        private String brand;
+        private String sku;
 
         private BigDecimal minPrice;
 
         private BigDecimal maxPrice;
 
-        private Boolean active;
+        private Long categoryId;
 
+        private Long brandId;
+
+        private String status = "active";
 }

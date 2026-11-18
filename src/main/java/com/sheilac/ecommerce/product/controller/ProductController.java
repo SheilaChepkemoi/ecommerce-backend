@@ -3,6 +3,7 @@ package com.sheilac.ecommerce.product.controller;
 import com.sheilac.ecommerce.product.dto.ProductFilterRequest;
 import com.sheilac.ecommerce.product.dto.ProductRequest;
 import com.sheilac.ecommerce.product.dto.ProductResponse;
+import com.sheilac.ecommerce.product.dto.UpdateProductRequest;
 import com.sheilac.ecommerce.product.service.ProductService;
 import com.sheilac.ecommerce.utils.enums.ResponseType;
 import com.sheilac.ecommerce.utils.response.CustomResponse;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -47,38 +47,31 @@ public class ProductController {
 
 
     @GetMapping
-    public ResponseEntity<
-            CustomResponse<PageResponse<ProductResponse>>> getAllProducts(
-
+    public ResponseEntity<CustomResponse<PageResponse<ProductResponse>>> getAllProducts(
             @ModelAttribute ProductFilterRequest filter,
-
-            Pageable pageable
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
     ) {
-
-        Page<ProductResponse> products =
+        PageResponse<ProductResponse> products =
                 productService.getAllProducts(
                         filter,
-                        pageable
+                        page,
+                        size,
+                        sortBy,
+                        sortDirection
                 );
 
-        PageResponse<ProductResponse> pageResponse =
-                PageResponse.from(products);
-
-        CustomResponse<PageResponse<ProductResponse>> response =
-                CustomResponse
-                        .<PageResponse<ProductResponse>>builder()
+        return ResponseEntity.ok(
+                CustomResponse.<PageResponse<ProductResponse>>builder()
                         .responseType(ResponseType.SUCCESS)
-                        .payload(pageResponse)
-                        .message(
-                                "Products retrieved successfully"
-                        )
-                        .messageTracker(
-                                System.currentTimeMillis()
-                        )
-                        .build();
-
-        return ResponseEntity.ok(response);
+                        .message("Products retrieved successfully.")
+                        .payload(products)
+                        .build()
+        );
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomResponse<ProductResponse>> getProductById(
@@ -105,7 +98,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<CustomResponse<ProductResponse>> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody ProductRequest request
+            @Valid @RequestBody UpdateProductRequest request
     ) {
 
         ProductResponse product =
@@ -125,16 +118,40 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(
+    public ResponseEntity<CustomResponse<Void>> deleteProduct(
+            @PathVariable Long id
+    ) {
+        productService.deleteProduct(id);
+
+        CustomResponse<Void> response =
+                CustomResponse
+                        .<Void>builder()
+                        .responseType(ResponseType.SUCCESS)
+                        .message("Product deleted successfully")
+                        .messageTracker(System.currentTimeMillis())
+                        .build();
+
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<CustomResponse<Void>> activateProduct(
             @PathVariable Long id
     ) {
 
-        productService.deleteProduct(id);
+        productService.activateProduct(id);
 
-        return ResponseEntity.noContent().build();
+        CustomResponse<Void> response =
+                CustomResponse.<Void>builder()
+                .responseType(ResponseType.SUCCESS)
+                .message("Product activated successfully")
+                .build();
+
+        return ResponseEntity.ok(response);
     }
-
 
     
 }

@@ -3,27 +3,21 @@ package com.sheilac.ecommerce.product.service;
 import com.sheilac.ecommerce.product.dto.ProductFilterRequest;
 import com.sheilac.ecommerce.product.dto.ProductRequest;
 import com.sheilac.ecommerce.product.dto.ProductResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import com.sheilac.ecommerce.product.dto.UpdateProductRequest;
+import com.sheilac.ecommerce.utils.response.PageResponse;
 
-
-@Service
 public interface ProductService {
 
     ProductResponse createProduct(ProductRequest request);
 
-    Page<ProductResponse> getAllProducts(
-            ProductFilterRequest filter,
-            Pageable pageable
-    );
+    PageResponse<ProductResponse> getAllProducts(
+            ProductFilterRequest filter, int page, Integer size, String sortBy, String sortDirection);
 
     ProductResponse getProductById(Long id);
 
-    ProductResponse updateProduct(
-            Long id,
-            ProductRequest request
-    );
+    ProductResponse updateProduct(Long id, UpdateProductRequest request);
 
     void deleteProduct(Long id);
+
+    void activateProduct(Long id);
 }

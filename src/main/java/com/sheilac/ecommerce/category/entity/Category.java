@@ -1,10 +1,7 @@
 package com.sheilac.ecommerce.category.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,10 +10,11 @@ import java.time.LocalDateTime;
         name = "categories",
         schema = "product"
 )
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Category {
 
     @Id
@@ -34,7 +32,11 @@ public class Category {
     private String description;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean active = true;
+
+    @Version
+    private Long version;
 
     private LocalDateTime createdAt;
 

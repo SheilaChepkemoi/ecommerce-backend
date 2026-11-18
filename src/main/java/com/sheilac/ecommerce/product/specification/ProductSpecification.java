@@ -1,3 +1,4 @@
+
 package com.sheilac.ecommerce.product.specification;
 
 import com.sheilac.ecommerce.product.entity.Product;
@@ -7,74 +8,68 @@ import java.math.BigDecimal;
 
 public class ProductSpecification {
 
-    private ProductSpecification() {
-        // Utility class - prevent creating objects
-    }
-
-    /**
-     * Filter products by brand.
-     */
-
-    public static Specification<Product> hasBrand(String brand) {
-
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(
-                        criteriaBuilder.lower(root.get("brand")),
-                        brand.toLowerCase()
-                );
-    }
-
-    /**
-     * Search products by name, description, brand or SKU.
-     */
+    // General search across product name, description, brand, category and SKU
     public static Specification<Product> search(String search) {
-
         return (root, query, criteriaBuilder) -> {
 
-            String searchPattern =
-                    "%" + search.toLowerCase() + "%";
+            String searchPattern = "%" + search.trim().toLowerCase() + "%";
 
             return criteriaBuilder.or(
-
                     criteriaBuilder.like(
-                            criteriaBuilder.lower(
-                                    root.get("name")
-                            ),
+                            criteriaBuilder.lower(root.get("name")),
                             searchPattern
                     ),
-
                     criteriaBuilder.like(
-                            criteriaBuilder.lower(
-                                    root.get("description")
-                            ),
+                            criteriaBuilder.lower(root.get("description")),
                             searchPattern
                     ),
-
                     criteriaBuilder.like(
-                            criteriaBuilder.lower(
-                                    root.get("brand")
-                            ),
+                            criteriaBuilder.lower(root.get("brand").get("name")),
                             searchPattern
                     ),
-
                     criteriaBuilder.like(
-                            criteriaBuilder.lower(
-                                    root.get("sku")
-                            ),
+                            criteriaBuilder.lower(root.get("category").get("name")),
+                            searchPattern
+                    ),
+                    criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("sku")),
                             searchPattern
                     )
             );
         };
     }
 
-    /**
-     * Filter products whose price is greater than
-     * or equal to the minimum price.
-     */
+    // Search by SKU only
+    public static Specification<Product> hasSku(String sku) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("sku")),
+                        "%" + sku.trim().toLowerCase() + "%"
+                );
+    }
+
+    // Filter by brand
+    public static Specification<Product> hasBrandId(Long brandId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                        root.get("brand").get("id"),
+                        brandId
+                );
+    }
+
+    // Filter by category
+    public static Specification<Product> hasCategoryId(Long categoryId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                        root.get("category").get("id"),
+                        categoryId
+                );
+    }
+
+    // Minimum price
     public static Specification<Product> priceGreaterThanOrEqualTo(
             BigDecimal minPrice
     ) {
-
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.greaterThanOrEqualTo(
                         root.get("price"),
@@ -82,15 +77,10 @@ public class ProductSpecification {
                 );
     }
 
-
-    /**
-     * Filter products whose price is less than
-     * or equal to the maximum price.
-     */
+    // Maximum price
     public static Specification<Product> priceLessThanOrEqualTo(
             BigDecimal maxPrice
     ) {
-
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.lessThanOrEqualTo(
                         root.get("price"),
@@ -98,18 +88,12 @@ public class ProductSpecification {
                 );
     }
 
-    /**
-     * Filter products by active status.
-     */
-    public static Specification<Product> hasActiveStatus(
-            Boolean active
-    ) {
-
+    // Filter by active/inactive status
+    public static Specification<Product> hasActiveStatus(Boolean active) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
                         root.get("active"),
                         active
                 );
     }
-
 }

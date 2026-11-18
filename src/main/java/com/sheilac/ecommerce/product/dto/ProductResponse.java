@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,7 +25,11 @@ public class ProductResponse {
 
     private String sku;
 
-    private String brand;
+    private Long brandId;
+
+    private String brandName;
+    
+    private String brandCode;
 
     private Integer stockQuantity;
 
@@ -37,4 +42,10 @@ public class ProductResponse {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private String primaryImageUrl;
+
+    private List<ProductImageResponse> images;   
+
+
 }
